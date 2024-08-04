@@ -1,0 +1,34 @@
+{
+  "name": "ktrek-backed-course",
+  "version": "1.0.0",
+  "description": "# course 2",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "dev": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Daniels-pet-projects/KTrek-backed-course.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Daniels-pet-projects/KTrek-backed-course/issues"
+  },
+  "homepage": "https://github.com/Daniels-pet-projects/KTrek-backed-course#readme",
+  "dependencies": {
+    "@prisma/client": "^5.17.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.28.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.1.0",
+    "nodemon": "^3.1.4",
+    "prisma": "^5.17.0"
+  }
+}
