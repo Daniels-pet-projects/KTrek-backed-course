@@ -1,3 +1,3 @@
 # KTrek-backed-course
 
-# course 1
+# course 2
