@@ -1,12 +1,14 @@
 {
   "name": "ktrek-backed-course",
   "version": "1.0.0",
-  "description": "# course 2",
+  "description": "",
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/index.ts",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write 'src/**/*.{ts,json}' --config .prettierrc"
   },
   "repository": {
     "type": "git",
@@ -20,13 +22,20 @@
   },
   "homepage": "https://github.com/Daniels-pet-projects/KTrek-backed-course#readme",
   "dependencies": {
+    "@fastify/cors": "^9.0.1",
     "@prisma/client": "^5.17.0",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
+    "fastify-autoload": "^4.0.0",
+    "fastify-plugin": "^4.5.1",
+    "ioredis": "^5.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
   "devDependencies": {
+    "@fastify/swagger": "^8.15.0",
+    "@fastify/swagger-ui": "^4.0.1",
+    "@types/ioredis": "^5.0.0",
     "@types/node": "^22.1.0",
     "nodemon": "^3.1.4",
     "prisma": "^5.17.0"

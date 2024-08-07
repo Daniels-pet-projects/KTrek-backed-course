@@ -1,9 +1,7 @@
 import Fastify from 'fastify';
 import 'dotenv/config';
-import { courseRoutes } from './routes/courses';
-import { enrollmentRoutes } from './routes/enrollments';
-import { lessonRoutes } from './routes/lessons';
-import { statusEnrollmentRoutes } from './routes/status-enrollments';
+import { join } from 'path';
+import AutoLoad from 'fastify-autoload';
 
 const PORT = process.env.PORT_APP;
 const HOST = process.env.HOST_APP;
@@ -12,18 +10,24 @@ const fastify = Fastify({
   logger: true
 });
 
-// Routes
-fastify.get('/', async (req, reply) => {
-  reply.send('Hello, World! js!');
+fastify.register(AutoLoad, {
+  dir: join(__dirname, 'plugins')
 });
 
-fastify
-  .register(courseRoutes)
-  .register(enrollmentRoutes)
-  .register(lessonRoutes)
-  .register(statusEnrollmentRoutes);
+fastify.register(AutoLoad, {
+  dir: join(__dirname, 'routes'),
+  options: { prefix: '/api' }
+});
 
-// Run the server!
+fastify.setErrorHandler((error, request, reply) => {
+  fastify.log.error(error);
+  reply.status(500).send({ error: 'Internal Server Error' });
+});
+
+fastify.get('/', (req, res) => {
+  res.send({ message: 'Welcome to KTrek services courses API' });
+});
+
 async function start() {
   try {
     if (require.main === module) {

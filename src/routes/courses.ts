@@ -1,16 +1,38 @@
+import { Courses } from '@prisma/client';
 import { FastifyInstance } from 'fastify';
 import {
   createCourseController,
-  getAllCoursesController,
+  // getAllCoursesController,
   getByIdCourseController,
   updateByIdCourseController,
   deleteByIdCourseController
-} from '../controllers/courses';
+} from '../services/courses';
+import { coursesParamsIdRequestSchema, coursesBodyRequestSchema } from '../schemas/request/courses';
 
-export async function courseRoutes(fastify: FastifyInstance) {
-  fastify.post('/course', createCourseController);
-  fastify.get('/courses', getAllCoursesController);
-  fastify.get('/course/:id', getByIdCourseController);
-  fastify.put('/course/:id', updateByIdCourseController);
-  fastify.delete('/course/:id', deleteByIdCourseController);
-}
+export default async (fastify: FastifyInstance): Promise<void> => {
+  fastify.post<{ Body: Omit<Courses, 'id'> }>(
+    '/course',
+    { schema: { ...coursesBodyRequestSchema } },
+    createCourseController
+  );
+
+  // fastify.get('/courses', getAllCoursesController);
+
+  fastify.get<{ Params: { id: string } }>(
+    '/course/:id',
+    { schema: { ...coursesParamsIdRequestSchema } },
+    getByIdCourseController
+  );
+
+  fastify.put<{ Params: { id: string }; Body: Omit<Courses, 'id'> }>(
+    '/course/:id',
+    { schema: { ...coursesParamsIdRequestSchema, ...coursesBodyRequestSchema } },
+    updateByIdCourseController
+  );
+
+  fastify.delete<{ Params: { id: string } }>(
+    '/course/:id',
+    { schema: { ...coursesParamsIdRequestSchema } },
+    deleteByIdCourseController
+  );
+};

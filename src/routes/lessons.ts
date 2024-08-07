@@ -1,16 +1,17 @@
+import { Lessons } from '@prisma/client';
 import { FastifyInstance } from 'fastify';
 import {
   createLessonController,
-  getAllLessonsController,
+  // getAllLessonsController,
   getByIdLessonController,
   updateByIdLessonController,
   deleteByIdLessonController
-} from '../controllers/lessons';
+} from '../services/lessons';
 
-export async function lessonRoutes(fastify: FastifyInstance) {
-  fastify.post('/lesson', createLessonController);
-  fastify.get('/lessons', getAllLessonsController);
-  fastify.get('/lesson/:id', getByIdLessonController);
-  fastify.put('/lesson/:id', updateByIdLessonController);
-  fastify.delete('/lesson/:id', deleteByIdLessonController);
-}
+export default async (fastify: FastifyInstance): Promise<void> => {
+  fastify.post<{ Body: Omit<Lessons, 'id'> }>('/lesson', createLessonController);
+  // fastify.get('/lessons', getAllLessonsController);
+  fastify.get<{ Params: { id: string } }>('/lesson/:id', getByIdLessonController);
+  fastify.put<{ Params: { id: string }; Body: Omit<Lessons, 'id'> }>('/lesson/:id', updateByIdLessonController);
+  fastify.delete<{ Params: { id: string } }>('/lesson/:id', deleteByIdLessonController);
+};

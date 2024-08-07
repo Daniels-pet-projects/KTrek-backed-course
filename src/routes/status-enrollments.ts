@@ -1,16 +1,17 @@
+import { StatusEnrollments } from '@prisma/client';
 import { FastifyInstance } from 'fastify';
 import {
   createStatusEnrollmentController,
-  getAllStatusEnrollmentsController,
+  // getAllStatusEnrollmentsController,
   getByIdStatusEnrollmentController,
   updateByIdStatusEnrollmentController,
   deleteByIdStatusEnrollmentController
-} from '../controllers/status-enrollments';
+} from '../services/status-enrollments';
 
-export async function statusEnrollmentRoutes(fastify: FastifyInstance) {
-  fastify.post('/statusEnrollment', createStatusEnrollmentController);
-  fastify.get('/statusEnrollments', getAllStatusEnrollmentsController);
-  fastify.get('/statusEnrollment/:id', getByIdStatusEnrollmentController);
-  fastify.put('/statusEnrollment/:id', updateByIdStatusEnrollmentController);
-  fastify.delete('/statusEnrollment/:id', deleteByIdStatusEnrollmentController);
-}
+export default async (fastify: FastifyInstance): Promise<void> => {
+  fastify.post<{ Body: Omit<StatusEnrollments, 'id'> }>('/statusEnrollment', createStatusEnrollmentController);
+  // fastify.get('/statusEnrollments', getAllStatusEnrollmentsController);
+  fastify.get<{ Params: { id: string } }>('/statusEnrollment/:id', getByIdStatusEnrollmentController);
+  fastify.put<{ Params: { id: string }; Body: Omit<StatusEnrollments, 'id'> }>('/statusEnrollment/:id', updateByIdStatusEnrollmentController);
+  fastify.delete<{ Params: { id: string } }>('/statusEnrollment/:id', deleteByIdStatusEnrollmentController);
+};
