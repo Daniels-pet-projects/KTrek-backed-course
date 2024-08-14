@@ -13,7 +13,8 @@ const fastify = Fastify({
 });
 
 fastify.register(autoLoad, {
-  dir: join(__dirname, 'plugins')
+  dir: join(__dirname, 'plugins'),
+  dirNameRoutePrefix: false
 });
 
 fastify.register(autoLoad, {
@@ -28,7 +29,7 @@ fastify.setErrorHandler((error, request, reply) => {
 
 fastify.get('/', (request, reply) => {
   reply.status(200).send({ message: `Welcome to ${name} API` });
-}); 
+});
 
 async function start() {
   try {
