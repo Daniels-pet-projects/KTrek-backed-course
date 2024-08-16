@@ -28,7 +28,7 @@ fastify.setErrorHandler((error, request, reply) => {
 });
 
 fastify.get('/', (request, reply) => {
-  reply.status(200).send({ message: `Welcome to ${name} API` });
+  reply.status(200).send({ message: `Welcome to ${ name } API` });
 });
 
 async function start() {
