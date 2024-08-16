@@ -1,19 +1,22 @@
 import { FastifyInstance } from 'fastify';
+import { courses } from '@prisma/client';
 
-import createCourseServices from '../services/course/create-course';
-import getAllCourseServices from '../services/course/get-all-courses';
-import courseByIdServices from '../services/course/course-by-id';
-import updateCourse from '../services/course/update-course';
-import deleteCourseServices from '../services/course/delete-course';
+import {
+  createCourseService,
+  getAllCoursesService,
+  courseByIdService,
+  updateCourseService,
+  deleteCourseService
+} from '../services/course';
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-  fastify.post<{ Body: any }>('/course', async (request, reply) => {
+  fastify.post<{ Body: Omit<courses, 'id'> }>('/course', async (request, reply) => {
     const data = request.body;
-    reply.code(200).send(await createCourseServices(fastify, data));
+    reply.code(200).send(await createCourseService(fastify, data));
   });
 
   fastify.get('/courses', async (request, reply) => {
-    reply.code(200).send(await getAllCourseServices(fastify));
+    reply.code(200).send(await getAllCoursesService(fastify));
   });
 
   fastify.get<{
@@ -22,18 +25,18 @@ export default async (fastify: FastifyInstance): Promise<void> => {
     };
   }>('/courses/:id', async (request, reply) => {
     const id = request.params.id;
-    reply.code(200).send(await courseByIdServices(fastify, id));
+    reply.code(200).send(await courseByIdService(fastify, id));
   });
 
   fastify.put<{
     Params: {
       id: string;
     };
-    Body: any;
+    Body: Omit<courses, 'id'>;
   }>('/courses/:id', async (request, reply) => {
     const id = request.params.id;
     const data = request.body;
-    reply.code(200).send(await updateCourse(fastify, id, data));
+    reply.code(200).send(await updateCourseService(fastify, id, data));
   });
 
   fastify.delete<{
@@ -42,6 +45,6 @@ export default async (fastify: FastifyInstance): Promise<void> => {
     };
   }>('/courses/:id', async (request, reply) => {
     const id = request.params.id;
-    reply.code(200).send(await deleteCourseServices(fastify, id));
-  })
+    reply.code(200).send(await deleteCourseService(fastify, id));
+  });
 };

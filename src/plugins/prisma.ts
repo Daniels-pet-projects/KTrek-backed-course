@@ -1,12 +1,12 @@
 import fp from 'fastify-plugin';
 import { PrismaClient } from '@prisma/client';
-import { databaseConfigPostgresql } from '../configs/database/database-config-postgresql';
+import { pg } from '../configs/database/pg';
 
 const initDatabaseConnection = async (): Promise<PrismaClient> => {
   const db = new PrismaClient({
     datasources: {
       db: {
-        url: databaseConfigPostgresql.databaseURL
+        url: pg.databaseURL
       }
     },
     errorFormat: 'pretty',

@@ -1,14 +1,15 @@
-# Dockerfile
 FROM node:18.18.0
 
-WORKDIR /app
+WORKDIR /app/
 
-COPY package*.json ./
+COPY ./dist ./dist/
 
-RUN npm install
+COPY ./prisma ./prisma/
 
-COPY . .
+COPY .env ./
 
-RUN npm run build
+COPY package.json ./
+
+RUN npm i 
 
 CMD ["npm", "run", "serve"]
