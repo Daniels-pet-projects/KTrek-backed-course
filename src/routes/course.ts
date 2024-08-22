@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { courses } from '@prisma/client';
+import { Courses } from '@prisma/client';
 
 import {
   createCourseService,
@@ -10,7 +10,7 @@ import {
 } from '../services/course';
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-  fastify.post<{ Body: Omit<courses, 'id'> }>('/course', async (request, reply) => {
+  fastify.post<{ Body: Omit<Courses, 'id'> }>('/course', async (request, reply) => {
     const data = request.body;
     reply.code(200).send(await createCourseService(fastify, data));
   });
@@ -32,7 +32,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
     Params: {
       id: string;
     };
-    Body: Omit<courses, 'id'>;
+    Body: Omit<Courses, 'id'>;
   }>('/courses/:id', async (request, reply) => {
     const id = request.params.id;
     const data = request.body;

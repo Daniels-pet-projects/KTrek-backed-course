@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { courses } from '@prisma/client';
+import { Courses } from '@prisma/client';
 import {
   createCourseRepository,
   getAllCoursesRepository,
@@ -10,12 +10,12 @@ import {
 
 export async function createCourseService(
   fastify: FastifyInstance,
-  data: Omit<courses, 'id'>
-): Promise<courses> {
+  data: Omit<Courses, 'id'>
+): Promise<Courses> {
   return await createCourseRepository(fastify, data);
 }
 
-export async function getAllCoursesService(fastify: FastifyInstance): Promise<courses[]> {
+export async function getAllCoursesService(fastify: FastifyInstance): Promise<Courses[]> {
   let courses;
 
   const cacheData = await fastify.redis.get('all-courses');
@@ -30,19 +30,19 @@ export async function getAllCoursesService(fastify: FastifyInstance): Promise<co
   return courses;
 }
 
-export async function courseByIdService(fastify: FastifyInstance, id: string): Promise<courses> {
+export async function courseByIdService(fastify: FastifyInstance, id: string): Promise<Courses> {
   return await courseByIdRepository(fastify, id);
 }
 
 export async function updateCourseService(
   fastify: FastifyInstance,
   id: string,
-  data: Omit<courses, 'id'>
-): Promise<courses> {
+  data: Omit<Courses, 'id'>
+): Promise<Courses> {
   return await updateCourseRepository(fastify, id, data);
 }
 
-export async function deleteCourseService(fastify: FastifyInstance, id: string): Promise<courses> {
+export async function deleteCourseService(fastify: FastifyInstance, id: string): Promise<Courses> {
   return await deleteCourseRepository(fastify, id);
 }
 

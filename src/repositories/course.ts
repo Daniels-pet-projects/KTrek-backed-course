@@ -1,22 +1,24 @@
 import { FastifyInstance } from 'fastify';
-import { courses } from '@prisma/client';
+import { Courses } from '@prisma/client';
 
 export async function createCourseRepository(
   fastify: FastifyInstance,
-  data: any // Omit<courses, 'id'>
-): Promise<courses> {
-  const course = await fastify.prisma.courses.create({ data });
+  data: Omit<Courses, 'id'>
+): Promise<Courses> {
+  const course = await fastify.prisma.courses.create({
+    data
+  });
 
   return course;
 }
 
-export async function getAllCoursesRepository(fastify: FastifyInstance): Promise<courses[]> {
-  const courses = await fastify.prisma.courses.findMany();
+export async function getAllCoursesRepository(fastify: FastifyInstance): Promise<Courses[]> {
+  const Courses = await fastify.prisma.courses.findMany();
 
-  return courses;
+  return Courses;
 }
 
-export async function courseByIdRepository(fastify: FastifyInstance, id: string): Promise<courses> {
+export async function courseByIdRepository(fastify: FastifyInstance, id: string): Promise<Courses> {
   const course = await fastify.prisma.courses.findUnique({
     where: {
       id
@@ -29,8 +31,8 @@ export async function courseByIdRepository(fastify: FastifyInstance, id: string)
 export async function updateCourseRepository(
   fastify: FastifyInstance,
   id: string,
-  data: Omit<courses, 'id'>
-): Promise<courses> {
+  data: Omit<Courses, 'id'>
+): Promise<Courses> {
   const updatedCourse = await fastify.prisma.courses.update({
     where: { id },
     data
@@ -39,8 +41,8 @@ export async function updateCourseRepository(
   return updatedCourse;
 }
 
-export async function deleteCourseRepository(fastify: FastifyInstance, id: string): Promise<any> { // Promise<courses>
-  const course = await fastify.prisma.courses.deleteMany({ where: { id } });
+export async function deleteCourseRepository(fastify: FastifyInstance, id: string): Promise<Courses> {
+  const course = await fastify.prisma.courses.delete({ where: { id } });
 
   return course;
 }

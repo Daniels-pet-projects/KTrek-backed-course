@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { enrollments } from '@prisma/client';
+import { Enrollments } from '@prisma/client';
 import {
   createEnrollmentRepository,
   getAllEnrollmentsRepository,
@@ -10,12 +10,12 @@ import {
 
 export async function createEnrollmentService(
   fastify: FastifyInstance,
-  data: Omit<enrollments, 'id'>
-): Promise<enrollments> {
+  data: Omit<Enrollments, 'id'>
+): Promise<Enrollments> {
   return await createEnrollmentRepository(fastify, data);
 }
 
-export async function getAllEnrollmentsService(fastify: FastifyInstance): Promise<enrollments[]> {
+export async function getAllEnrollmentsService(fastify: FastifyInstance): Promise<Enrollments[]> {
   let enrollments;
 
   const cacheData = await fastify.redis.get('all-enrollments');
@@ -30,19 +30,19 @@ export async function getAllEnrollmentsService(fastify: FastifyInstance): Promis
   return enrollments;
 }
 
-export async function enrollmentByIdService(fastify: FastifyInstance, id: string): Promise<enrollments> {
+export async function enrollmentByIdService(fastify: FastifyInstance, id: string): Promise<Enrollments> {
   return await enrollmentByIdRepository(fastify, id);
 }
 
 export async function updateEnrollmentService(
   fastify: FastifyInstance,
   id: string,
-  data: Omit<enrollments, 'id'>
-): Promise<enrollments> {
+  data: Omit<Enrollments, 'id'>
+): Promise<Enrollments> {
   return await updateEnrollmentRepository(fastify, id, data);
 }
 
-export async function deleteEnrollmentService(fastify: FastifyInstance, id: string): Promise<enrollments> {
+export async function deleteEnrollmentService(fastify: FastifyInstance, id: string): Promise<Enrollments> {
   return await deleteEnrollmentRepository(fastify, id);
 }
 

@@ -7,143 +7,168 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model answer_types {
-  id        String      @id
-  label     String      @unique
-  questions questions[]
+model Users {
+  id           String         @id @default(uuid())
+  showedId     String         @unique @map("showed_id")
+  email        String         @unique
+  firstName    String         @map("first_name")
+  lastName     String         @map("last_name")
+  middleName   String?        @default("") @map("middle_name")
+  phoneNumber  String         @unique @map("phone_number")
+  createdAt    DateTime?      @default(now()) @map("created_at")
+  updatedAt    DateTime?      @updatedAt @map("updated_at")
+  role         Roles          @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId       String         @map("role_id")
+  password     Passwords?
+  courses      Courses[]
+  enrollments  Enrollments[]
+  attemptsPass AttemptsPass[]
+
+  @@map("users")
 }
 
-model answers {
-  id                                             String     @id
-  answer_text                                    String
-  created_at                                     DateTime?  @default(now())
-  updated_at                                     DateTime?
-  question_id                                    String?
-  questions_answers_question_idToquestions       questions? @relation("answers_question_idToquestions", fields: [question_id], references: [id], onDelete: Cascade)
-  questions_questions_correct_answer_idToanswers questions? @relation("questions_correct_answer_idToanswers")
+model Roles {
+  id    String  @id @default(uuid())
+  label String  @unique
+  users Users[]
+
+  @@map("roles")
 }
 
-model attempts_pass {
-  id           String         @id
-  test_id      String?
-  user_id      String?
-  attempt      Int
-  created_at   DateTime?      @default(now())
-  tests        tests?         @relation(fields: [test_id], references: [id], onDelete: Cascade)
-  users        users?         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_answers user_answers[]
+model Passwords {
+  id     String @id @default(uuid())
+  salt   String
+  hash   String
+  user   Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
+
+  @@unique([salt, hash])
+  @@map("passwords")
 }
 
-model courses {
-  id          String        @id
-  author_id   String?
+model Courses {
+  id          String        @id @default(uuid())
+  author      Users?        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String?       @map("author_id")
   title       String
   description String
-  created_at  DateTime?     @default(now())
-  updated_at  DateTime?
-  users       users?        @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  enrollments enrollments[]
-  lessons     lessons[]
+  createdAt   DateTime?     @default(now()) @map("created_at")
+  updatedAt   DateTime?     @updatedAt @map("updated_at")
+  lessons     Lessons[]
+  enrollments Enrollments[]
+
+  @@map("courses")
 }
 
-model enrollments {
-  id                 String              @id
-  join_at            DateTime?           @default(now())
-  completed_percent  Int
-  user_id            String?
-  course_id          String?
-  status_id          String?
-  courses            courses?            @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  status_enrollments status_enrollments? @relation(fields: [status_id], references: [id], onDelete: Cascade)
-  users              users?              @relation(fields: [user_id], references: [id], onDelete: Cascade)
-}
-
-model lessons {
-  id          String    @id
-  course_id   String?
+model Lessons {
+  id          String    @id @default(uuid())
+  course      Courses?  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId    String?   @map("course_id")
   title       String
   description String
   content     String
-  created_at  DateTime? @default(now())
-  updated_at  DateTime?
-  courses     courses?  @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  tests       tests?
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+  test        Tests?
+
+  @@map("lessons")
 }
 
-model passwords {
-  id      String @id
-  salt    String
-  hash    String
-  user_id String @unique
-  users   users  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+model Enrollments {
+  id               String             @id @default(uuid())
+  joinAt           DateTime?          @default(now()) @map("join_at")
+  completedPercent Int                @map("completed_percent")
+  user             Users?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String?            @map("user_id")
+  course           Courses?           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId         String?            @map("course_id")
+  status           StatusEnrollments? @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  statusId         String?            @map("status_id")
 
-  @@unique([salt, hash])
+  @@map("enrollments")
 }
 
-model questions {
-  id                                           String         @id
-  question_text                                String
-  answer_type_id                               String?
-  test_id                                      String?
-  correct_answer_id                            String         @unique
-  created_at                                   DateTime?      @default(now())
-  updated_at                                   DateTime?
-  answers_answers_question_idToquestions       answers[]      @relation("answers_question_idToquestions")
-  answer_types                                 answer_types?  @relation(fields: [answer_type_id], references: [id], onDelete: Cascade)
-  answers_questions_correct_answer_idToanswers answers        @relation("questions_correct_answer_idToanswers", fields: [correct_answer_id], references: [id], onDelete: Cascade)
-  tests                                        tests?         @relation(fields: [test_id], references: [id], onDelete: Cascade)
-  user_answers                                 user_answers[]
-}
-
-model roles {
-  id    String  @id
-  label String  @unique
-  users users[]
-}
-
-model status_enrollments {
-  id          String        @id
+model StatusEnrollments {
+  id          String        @id @default(uuid())
   label       String        @unique
-  enrollments enrollments[]
+  enrollments Enrollments[]
+
+  @@map("status_enrollments")
 }
 
-model tests {
-  id            String          @id
-  title         String
-  description   String
-  created_at    DateTime?       @default(now())
-  updated_at    DateTime?
-  lesson_id     String          @unique
-  attempts_pass attempts_pass[]
-  questions     questions[]
-  lessons       lessons         @relation(fields: [lesson_id], references: [id], onDelete: Cascade)
+model Tests {
+  id          String         @id @default(uuid())
+  title       String
+  description String
+  createdAt   DateTime?      @default(now()) @map("created_at")
+  updatedAt   DateTime?      @updatedAt @map("updated_at")
+  lesson      Lessons        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId    String         @unique @map("lesson_id")
+  attemptPass AttemptsPass[]
+  questions   Questions[]
+
+  @@map("tests")
 }
 
-model user_answers {
-  id              String         @id
-  questions_id    String?
-  attempt_pass_id String?
-  answer_text     String
-  is_correct      Boolean        @default(false)
-  created_at      DateTime?      @default(now())
-  attempts_pass   attempts_pass? @relation(fields: [attempt_pass_id], references: [id], onDelete: Cascade)
-  questions       questions?     @relation(fields: [questions_id], references: [id], onDelete: Cascade)
+model Questions {
+  id              String        @id @default(uuid())
+  questionText    String        @map("question_text")
+  answerType      AnswerType?   @relation(fields: [answerTypeId], references: [id], onDelete: Cascade)
+  answerTypeId    String?       @map("answer_type_id")
+  test            Tests?        @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId          String?       @map("test_id")
+  correctAnswer   Answers       @relation("CorrectAnswer", fields: [correctAnswerId], references: [id], onDelete: Cascade)
+  correctAnswerId String        @unique @map("correct_answer_id")
+  createdAt       DateTime?     @default(now()) @map("created_at")
+  updatedAt       DateTime?     @updatedAt @map("updated_at")
+  answers         Answers[]
+  userAnswers     UserAnswers[]
+
+  @@map("questions")
 }
 
-model users {
-  id            String          @id
-  showed_id     String          @unique
-  email         String          @unique
-  first_name    String
-  last_name     String
-  middle_name   String?         @default("")
-  phone_number  String          @unique
-  created_at    DateTime?       @default(now())
-  updated_at    DateTime?
-  role_id       String
-  attempts_pass attempts_pass[]
-  courses       courses[]
-  enrollments   enrollments[]
-  passwords     passwords?
-  roles         roles           @relation(fields: [role_id], references: [id], onDelete: Cascade)
+model AnswerType {
+  id        String      @id @default(uuid())
+  label     String      @unique
+  questions Questions[]
+
+  @@map("answer_types")
+}
+
+model Answers {
+  id            String     @id @default(uuid())
+  answerText    String     @map("answer_text")
+  createdAt     DateTime?  @default(now()) @map("created_at")
+  updatedAt     DateTime?  @updatedAt @map("updated_at")
+  question      Questions? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId    String?    @map("question_id")
+  correctAnswer Questions? @relation("CorrectAnswer")
+
+  @@map("answers")
+}
+
+model UserAnswers {
+  id            String        @id @default(uuid())
+  question      Questions?    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId    String?       @map("questions_id")
+  attemptPass   AttemptsPass? @relation(fields: [attemptPassId], references: [id], onDelete: Cascade)
+  attemptPassId String?       @map("attempt_pass_id")
+  answerText    String        @map("answer_text")
+  isCorrect     Boolean       @default(false) @map("is_correct")
+  createdAt     DateTime?     @default(now()) @map("created_at")
+
+  @@map("user_answers")
+}
+
+model AttemptsPass {
+  id          String        @id @default(uuid())
+  test        Tests?        @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId      String?       @map("test_id")
+  user        Users?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?       @map("user_id")
+  attempt     Int
+  createdAt   DateTime?     @default(now()) @map("created_at")
+  userAnswers UserAnswers[]
+
+  @@map("attempts_pass")
 }

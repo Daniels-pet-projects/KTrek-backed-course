@@ -1,49 +1,56 @@
 import { FastifyInstance } from 'fastify';
-import { status_enrollments } from '@prisma/client';
+import { StatusEnrollments } from '@prisma/client';
 
 export async function createStatusEnrollmentRepository(
   fastify: FastifyInstance,
-  data: any // Omit<status_enrollments, 'id'>
-): Promise<status_enrollments> {
-  const statusEnrollment = await fastify.prisma.status_enrollments.create({ data });
+  data: Omit<StatusEnrollments, 'id'>
+): Promise<StatusEnrollments> {
+  const course = await fastify.prisma.statusEnrollments.create({
+    data
+  });
 
-  return statusEnrollment;
+  return course;
 }
 
-export async function getAllStatusEnrollmentsRepository(fastify: FastifyInstance): Promise<status_enrollments[]> {
-  const statusEnrollments = await fastify.prisma.status_enrollments.findMany();
+export async function getAllStatusEnrollmentsRepository(fastify: FastifyInstance): Promise<StatusEnrollments[]> {
+  const StatusEnrollments = await fastify.prisma.statusEnrollments.findMany();
 
-  return statusEnrollments;
+  return StatusEnrollments;
 }
 
-export async function statusEnrollmentByIdRepository(fastify: FastifyInstance, id: string): Promise<status_enrollments> {
-  const statusEnrollment = await fastify.prisma.status_enrollments.findUnique({
+export async function statusEnrollmentByIdRepository(
+  fastify: FastifyInstance,
+  id: string
+): Promise<StatusEnrollments> {
+  const course = await fastify.prisma.statusEnrollments.findUnique({
     where: {
       id
     }
   });
 
-  return statusEnrollment;
+  return course;
 }
 
 export async function updateStatusEnrollmentRepository(
   fastify: FastifyInstance,
   id: string,
-  data: Omit<status_enrollments, 'id'>
-): Promise<status_enrollments> {
-  const updatedStatusEnrollment = await fastify.prisma.status_enrollments.update({
+  data: Omit<StatusEnrollments, 'id'>
+): Promise<StatusEnrollments> {
+  const updatedCourse = await fastify.prisma.statusEnrollments.update({
     where: { id },
     data
   });
 
-  return updatedStatusEnrollment;
+  return updatedCourse;
 }
 
-export async function deleteStatusEnrollmentRepository(fastify: FastifyInstance, id: string): Promise<any> {
-  // Promise<status_enrollments>
-  const statusEnrollment = await fastify.prisma.status_enrollments.deleteMany({ where: { id } });
+export async function deleteStatusEnrollmentRepository(
+  fastify: FastifyInstance,
+  id: string
+): Promise<StatusEnrollments> {
+  const course = await fastify.prisma.statusEnrollments.delete({ where: { id } });
 
-  return statusEnrollment;
+  return course;
 }
 
 export default {

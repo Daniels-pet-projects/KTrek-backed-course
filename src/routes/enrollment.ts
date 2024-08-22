@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { enrollments } from '@prisma/client';
+import { Enrollments } from '@prisma/client';
 
 import {
   createEnrollmentService,
@@ -10,7 +10,7 @@ import {
 } from '../services/enrollment';
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-  fastify.post<{ Body: Omit<enrollments, 'id'> }>('/enrollment', async (request, reply) => {
+  fastify.post<{ Body: Omit<Enrollments, 'id'> }>('/enrollment', async (request, reply) => {
     const data = request.body;
     reply.code(200).send(await createEnrollmentService(fastify, data));
   });
@@ -23,7 +23,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
     Params: {
       id: string;
     };
-  }>('/enrollments/:id', async (request, reply) => {
+  }>('/enrollment/:id', async (request, reply) => {
     const id = request.params.id;
     reply.code(200).send(await enrollmentByIdService(fastify, id));
   });
@@ -32,8 +32,8 @@ export default async (fastify: FastifyInstance): Promise<void> => {
     Params: {
       id: string;
     };
-    Body: Omit<enrollments, 'id'>;
-  }>('/enrollments/:id', async (request, reply) => {
+    Body: Omit<Enrollments, 'id'>;
+  }>('/enrollment/:id', async (request, reply) => {
     const id = request.params.id;
     const data = request.body;
     reply.code(200).send(await updateEnrollmentService(fastify, id, data));
@@ -43,7 +43,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
     Params: {
       id: string;
     };
-  }>('/enrollments/:id', async (request, reply) => {
+  }>('/enrollment/:id', async (request, reply) => {
     const id = request.params.id;
     reply.code(200).send(await deleteEnrollmentService(fastify, id));
   });

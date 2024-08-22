@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { status_enrollments } from '@prisma/client';
+import { StatusEnrollments } from '@prisma/client';
 
 import {
   createStatusEnrollmentService,
@@ -10,7 +10,7 @@ import {
 } from '../services/status-enrollment';
 
 export default async (fastify: FastifyInstance): Promise<void> => {
-  fastify.post<{ Body: Omit<status_enrollments, 'id'> }>('/statusEnrollment', async (request, reply) => {
+  fastify.post<{ Body: Omit<StatusEnrollments, 'id'> }>('/statusEnrollment', async (request, reply) => {
     const data = request.body;
     reply.code(200).send(await createStatusEnrollmentService(fastify, data));
   });
@@ -32,7 +32,7 @@ export default async (fastify: FastifyInstance): Promise<void> => {
     Params: {
       id: string;
     };
-    Body: Omit<status_enrollments, 'id'>;
+    Body: Omit<StatusEnrollments, 'id'>;
   }>('/statusEnrollments/:id', async (request, reply) => {
     const id = request.params.id;
     const data = request.body;

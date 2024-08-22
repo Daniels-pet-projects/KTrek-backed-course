@@ -1,11 +1,11 @@
 {
-  "name": "ktrek-backed-course-v2",
+  "name": "ktrek-backed-course",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "npm run build && docker-compose up --build -d",
-    "stop": "docker-compose down",
+    "start": "npm run build && docker compose up --build -d",
+    "stop": "docker compose down",
     "restart": "npm run stop && npm start",
     "dev": "nodemon",
     "build": "tsc",
